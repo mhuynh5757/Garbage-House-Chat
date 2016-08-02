@@ -1,7 +1,12 @@
 doctype html
-html
+html(ng-app="chatApp")
   head
-    title= title
+    title Chat
     link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/angular.min.js')
+    script(src='/javascripts/angular-route.min.js')
+    script(src='/javascripts/script.js')
+    base(href="/")
   body
-    block content
+    h1 Layout Loaded
+    div(ng-view)
