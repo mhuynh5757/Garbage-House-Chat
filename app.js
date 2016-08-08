@@ -1,96 +1,78 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+module.exports = function(db) {
+  var express = require('express');
+  var path = require('path');
+  var favicon = require('serve-favicon');
+  var logger = require('morgan');
+  var cookieParser = require('cookie-parser');
+  var bodyParser = require('body-parser');
+  var expressSession = require('express-session');
+  var passport = require('passport');
+  var routes = require('./routes')(db);
+  var app = express();
 
-var expressSession = require('express-session');
-var mongodb = require('mongodb');
+  // view engine setup
+  app.set('views', path.join(__dirname, 'views'));
+  app.set('view engine', 'jade');
 
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+  // uncomment after placing your favicon in /public
+  //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+  app.use(logger('dev'));
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(cookieParser());
 
-var routes = require('./routes');
+  var sessionMiddleware = expressSession({
+    secret: 'yoloswagorghini',
+    resave: false,
+    saveUninitialized: false
+  });
 
-var app = express();
+  app.use(sessionMiddleware);
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+  app.use(express.static(path.join(__dirname, 'public')));
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(expressSession({
-  secret: 'yoloswagorghini',
-  resave: false,
-  saveUninitialized: false
-}));
-app.use(passport.initialize());
-app.use(passport.session());
+  app.use('/', routes);
 
-app.use(express.static(path.join(__dirname, 'public')));
+  passport.serializeUser(function(user, done) {
+    done(null, user.username);
+  });
 
-app.use('/', routes);
+  passport.deserializeUser(function(user, done) {
+    done(null, user);
+  });
 
-passport.use('login', new LocalStrategy(function(username, password, done) {
-  if(!username === 'doge')
-  {
-    return done(null, false);
+  // catch 404 and forward to error handler
+  app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+  });
+
+  // error handlers
+
+  // development error handler
+  // will print stacktrace
+  if (app.get('env') === 'development') {
+    app.use(function(err, req, res, next) {
+      res.status(err.status || 500);
+      res.render('error', {
+        message: err.message,
+        error: err
+      });
+    });
   }
-  if(!password === 'bacon')
-  {
-    return done(null, false);
-  }
-  var user = {
-    'username': username,
-    'password': password
-  };
-  return done(null, user);
-}));
 
-passport.serializeUser(function(user, done) {
-  done(null, user.username);
-});
-
-passport.deserializeUser(function(user, done) {
-  done(null, user);
-});
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
+  // production error handler
+  // no stacktraces leaked to user
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
-      error: err
+      error: {}
     });
   });
+
+  return {'app': app, 'sessionMiddleware': sessionMiddleware}
 }
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
-});
-
-
-module.exports = app;

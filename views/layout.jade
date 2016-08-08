@@ -4,9 +4,9 @@ html(ng-app="chatApp")
     title Chat
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='/javascripts/angular.min.js')
-    script(src='/javascripts/angular-route.min.js')
+    script(src='/javascripts/angular-ui-router.min.js')
+    script(src="/socket.io/socket.io.js")
     script(src='/javascripts/script.js')
     base(href="/")
   body
-    h1 Layout Loaded
-    div(ng-view)
+    div(ui-view)
