@@ -169,7 +169,7 @@ chatApp.directive('autoscroll', function($window) {
   return function($scope, $element, $attrs) {
     var raw = $element[0];
     $element.bind('scroll', function() {
-      if (raw.scrollTop + raw.offsetHeight == raw.scrollHeight)
+      if (raw.scrollTop + raw.offsetHeight + 1 >= raw.scrollHeight)
       {
         $scope.toAutoscroll = true;
       }
