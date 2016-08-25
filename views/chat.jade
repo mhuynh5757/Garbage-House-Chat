@@ -1,12 +1,21 @@
-p
-  small Your Username: 
-  | !{username}
-ul Users
-  li(ng-repeat="usr in users track by $index") {{usr}}
-ul Messages
-  li(ng-repeat="msg in messages track by $index") {{msg}}
-form(ng-submit="message()")
-  input(type="text", ng-model="message_to_send")
-  input(type="submit", value="Send")
-form(name="logout", action="/logout", method="get")
-  input(type="submit", value="Logout")
+div(class="header")
+  p(class="left") Garbage House Chat
+  p(class="right") Logged in as !{username} 
+    a(ng-click="logout()" class="logout") Logout
+div(class="content hbox")
+  div(class="userlist vbox")
+    p(class="header") Users
+    div(class="content")
+      ul
+        li(ng-repeat="usr in users track by $index") {{usr}}
+  div(class="chatlog vbox")
+    p(class="header") Messages
+    div(autoscroll, class="content", id="chatlog")
+      ul
+        li(ng-repeat="msg in messages track by $index")
+          small {{msg.timestamp}} 
+          |&nbsp;{{msg.message}}
+    div(class="footer")
+      form(ng-submit="message()" class="hbox input")
+        input(type="text", ng-model="message_to_send", class="textbox", autofocus)
+        input(type="submit", value="Send", class="send-button")

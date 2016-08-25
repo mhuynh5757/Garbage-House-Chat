@@ -13,7 +13,7 @@ module.exports = function(db) {
       db.collection('users').findOne({'username': username}, function(err, user) {
         if(!user)
         {
-          return done(null, false);
+          return done(null, false, {message: 'Username or password invalid.'});
         }
         bcrypt.compare(password, user.password, function(err, res) {
           if(err)
@@ -22,9 +22,9 @@ module.exports = function(db) {
           }
           if(!res)
           {
-            return done(null, false);
+            return done(null, false, {message: 'Username or password invalid.'});
           }
-          return done(null, user);
+          return done(null, user, {authenticated: true, redirect: 'chat', message: 'Successfully logged in.'});
         });
       });
     }
@@ -34,18 +34,46 @@ module.exports = function(db) {
     }
   }));
   
-  passport.use('signup', new LocalStrategy({
-    passReqToCallback: true
-  }, function(req, username, password, done) {
+  passport.use('signup', new LocalStrategy( { passReqToCallback: true },
+  function(req, username, password, done) {
     if(req.body.email.length <= 20 && username.length <= 20 && password.length <= 20)
     {
-      db.collections('users').findOne({'username': username}, function(err, user) {
-        if(user)
+      db.collection('emails').findOne({'email': req.body.email}, function(err, email) {
+        if(!email)
         {
-          return done(null, false);
+          return done(null, false, {message: 'E-mail invalid.'})
         }
-        bcrypt;
+        db.collection('users').findOne({'username': username}, function(err, user) {
+          if(user)
+          {
+            return done(null, false, {message: 'This username has already been taken.'});
+          }
+          bcrypt.hash(password, 12, function(err, res) {
+            if(err)
+            {
+              throw new Error(err);
+            }
+            if(!res)
+            {
+              return(null, false);
+            }
+            bcrypt.hash(password, 12, function(err, hash) {
+              var newUser = {
+                'username': username,
+                'password': hash,
+                'nickname': username
+              };
+              db.collection('users').insert(newUser, function(err, res) {
+                return done(null, newUser, {authenticated: true, redirect: 'chat', message: 'Successfully signed up.'});
+              });
+            });
+          });
+        });
       });
+    }
+    else
+    {
+      return done(null, false, {message: 'All fields must be less than or equal to 20 characters long.'});
     }
   }));
 
@@ -60,7 +88,7 @@ module.exports = function(db) {
   router.post('/home', function(req, res, next) {
     if (req.isAuthenticated())
     {
-      return res.status(300).send('chat');
+      return res.status(200).send('chat');
     }
     else
     {
@@ -83,21 +111,42 @@ module.exports = function(db) {
       }
       if (!user)
       {
-        return res.status(401).send('fail');
+        return res.status(200).send(info);
       }
       req.logIn(user, function(err) {
         if (err)
         {
           return next(err);
         }
-        return res.status(200).send('chat');
+        return res.status(200).send(info);
       });
     })(req, res, next);
   });
   
   router.get('/signup', function(req, res, next) {
     return res.render('signup');
-  })
+  });
+  
+  router.post('/signup', function(req, res, next) {
+    passport.authenticate('signup', function(err, user, info) {
+      if (err)
+      {
+        console.log(err);
+        return next(err);
+      }
+      if (!user)
+      {
+        return res.status(200).send(info);
+      }
+      req.logIn(user, function(err) {
+        if (err)
+        {
+          return next(err);
+        }
+        return res.status(200).send(info);
+      })
+    })(req, res, next);
+  });
   
   router.get('/chat', function(req, res, next) {
     if (req.isAuthenticated())

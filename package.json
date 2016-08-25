@@ -6,8 +6,6 @@
     "start": "node ./io.js"
   },
   "dependencies": {
-    "angular": "^1.5.8",
-    "angular-ui-router": "^0.3.1",
     "bcrypt": "^0.8.7",
     "body-parser": "~1.15.1",
     "cookie-parser": "~1.4.3",
@@ -17,6 +15,7 @@
     "jade": "^1.11.0",
     "mongodb": "^2.2.5",
     "morgan": "~1.7.0",
+    "normalize.css": "^4.2.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "serve-favicon": "~2.3.0",

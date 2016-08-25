@@ -6,6 +6,7 @@ module.exports = function(db) {
   var cookieParser = require('cookie-parser');
   var bodyParser = require('body-parser');
   var expressSession = require('express-session');
+  // var flash = require('connect-flash');
   var passport = require('passport');
   var routes = require('./routes')(db);
   var app = express();
@@ -28,6 +29,8 @@ module.exports = function(db) {
   });
 
   app.use(sessionMiddleware);
+  // app.use(flash());
+  
   app.use(passport.initialize());
   app.use(passport.session());
 

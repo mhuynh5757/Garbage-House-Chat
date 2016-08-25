@@ -1,5 +1,5 @@
 var mongodb = require('mongodb');
-var url = require('./dbURL.js');
+var url = process.env.MONGODB_URI;
 
 mongodb.MongoClient.connect(url, function(err, db) {
   if(err)
@@ -15,9 +15,10 @@ mongodb.MongoClient.connect(url, function(err, db) {
     function update_users() {
       connected_users = [];
       Object.keys(io.sockets.sockets).forEach(function (key) {
-        if (connected_users.indexOf(io.sockets.sockets[key].request.session.passport.user) < 0)
+        var _user = io.sockets.sockets[key].request.session.passport
+        if (_user != undefined && connected_users.indexOf(_user.user) < 0)
         {
-          connected_users.push(io.sockets.sockets[key].request.session.passport.user);
+          connected_users.push(_user.user);
         }
       });
       io.emit('connected users', connected_users);

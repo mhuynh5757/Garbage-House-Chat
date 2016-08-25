@@ -1,0 +1,275 @@
+/* TODO change color scheme to this?
+http://paletton.com/#uid=73x270kEcF5lhIDrfFTFGrzIglx
+*/
+
+html, body {
+  font-family: 'Open Sans', sans-serif;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background: rgba(41, 41, 41, 1);
+  font-size: 1.15em;
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: .25em;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.25);
+  border-radius: 1em;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 1em;
+  background-color: rgba(255,255,255,0.5);
+}
+
+input[type="text"], input[type="password"] {
+  line-height: 2em;
+}
+
+.vbox {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+}
+
+.hbox {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+}
+
+.expand {
+  flex: 1;
+}
+
+.header {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.header > .right > .logout {
+  border-radius: .3em;
+  padding: .3em;
+  color: white;
+  background-color: rgba(0, 220, 0, 1);
+  cursor: default;
+}
+
+.header > .right > .logout:hover {
+  background-color: rgba(76, 226, 76 ,1);
+}
+
+.header > .right > .logout:active {
+  background-color: rgba(0, 137, 0, 1);
+}
+
+.frame > .header {
+  order: 0;
+  flex: 0;
+  background-color: rgba(9, 113, 193,1);
+}
+
+.frame > .content {
+  order: 1;
+  flex: 1;
+}
+
+.frame > .content > .loginSignupForm {
+  align-self: center;
+  padding-top: 3.5em;
+  width: 15em;
+}
+
+.frame > .content > .loginSignupForm > .warning {
+  background-color: rgba(255, 0, 0,1);
+  padding: 1em;
+  border-radius: .3em;
+  margin-bottom: 1em;
+}
+
+.frame > .content > .loginSignupForm > .warning:hover {
+  background-color: rgba(255, 85, 85,1);
+}
+
+.frame > .content > .loginSignupForm > .warning:active {
+  background-color: rgba(171, 0, 0,1);
+}
+
+.frame > .content > .loginSignupForm > form > .textbox {
+  font-family: 'Open Sans', sans-serif;
+  flex: 1;
+  border-style: none;
+  border-radius: .3em;
+  padding: .25em;
+  font-size: .75em;
+}
+
+.frame > .content > .loginSignupForm > form > .button {
+  font-family: 'Open Sans', sans-serif;
+  background-color: rgba(9, 113, 193, 1);
+  color: white;
+  border-style: none;
+  border-radius: .3em;
+  font-size: 1em;
+  padding: 1em;
+  margin-bottom: 1em;
+}
+
+.frame > .content > .loginSignupForm > form > .button:hover {  
+  background-color: rgba(77, 148, 203, 1);
+}
+
+.frame > .content > .loginSignupForm > form > .button:active {
+  background-color: rgba(4, 64, 110, 1);
+}
+
+.frame > .content > .loginSignupForm > form > .button:focus {
+  outline: 0;
+}
+
+.header > .left {
+  float: left;
+  display: inline;
+}
+
+.header > .right {
+  float: right;
+  display: inline;
+}
+
+.userlist {
+  order: 0;
+  flex: 1;
+  border-right: solid;
+  border-width: 1px;
+  border-color: rgba(128,128,128,1);
+}
+
+.userlist > .header {
+  order: 0;
+  flex: 0;
+  padding: .5em;
+  margin: 0;
+  color: rgba(0, 220, 0, 1);
+  border-bottom: solid;
+  border-width: 1px;
+  border-color: rgba(128,128,128,1);
+}
+
+.userlist > .content {
+  order: 1;
+  flex: 1;
+  overflow-y: auto;
+  margin: .5em;
+}
+
+.userlist > .content > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.userlist > .content > ul > li {
+  border-bottom: solid 1px;
+  border-color: rgba(128,128,128,1);
+  margin-right: .5em;
+  padding: .5em;
+}
+
+.chatlog {
+  order: 1;
+  flex: 3;
+}
+
+.chatlog > .header {
+  order: 0;
+  flex: 0;
+  padding: .5em;
+  margin: 0;
+  color: rgba(0, 220, 0, 1);
+  border-bottom: solid;
+  border-width: 1px;
+  border-color: rgba(128,128,128,1);
+}
+
+.chatlog > .content {
+  order: 1;
+  flex: 1;
+  overflow-y: auto;
+  margin: .5em;
+}
+
+.chatlog > .content > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.chatlog > .content > ul > li {
+  border-bottom: solid 1px;
+  border-color: rgba(128,128,128,1);
+  margin-right: .5em;
+  padding: .5em;
+}
+
+.chatlog > .content > ul > li:nth-child(even) {
+  background-color: rgba(255,255,255,.05);
+}
+
+.chatlog > .content > ul > li > small {
+  color: rgba(255, 146, 0, 1);
+  border-right: solid 1px;
+  border-color: rgba(128,128,128,1);
+  font-weight: 300;
+}
+
+.chatlog > .footer {
+  order: 2;
+  flex: 0;
+  padding: .5em;
+}
+
+.chatlog > .footer > .input > .textbox {
+  font-family: 'Open Sans', sans-serif;
+  flex: 1;
+  border-style: none;
+  border-top-left-radius: .3em;
+  border-bottom-left-radius: .3em;
+  padding: .25em;
+  font-weight: 400;
+  font-size: .85em;
+}
+
+.chatlog > .footer > .input > .send-button {
+  font-family: 'Open Sans', sans-serif;
+  background-color: rgba(9, 113, 193,1);
+  color: white;
+  border-style: none;
+  border-top-right-radius: .3em;
+  border-bottom-right-radius: .3em;
+  font-size: .75em;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.chatlog > .footer > .input > .send-button:hover {  
+  background-color: rgba(77, 148, 203,1);
+}
+
+.chatlog > .footer > .input > .send-button:active {
+  background-color: rgba(4, 64, 110, 1);
+}
+
+.chatlog > .footer > .input > .send-button:focus {
+  outline: 0;
+}

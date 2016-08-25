@@ -2,11 +2,14 @@ doctype html
 html(ng-app="chatApp")
   head
     title Chat
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/normalize.css')
+    link(rel='stylesheet', href='/stylesheets/client.css')
+    link(href="https://fonts.googleapis.com/css?family=Open+Sans:300,400", rel="stylesheet")
+
     script(src='/javascripts/angular.min.js')
     script(src='/javascripts/angular-ui-router.min.js')
+    
     script(src="/socket.io/socket.io.js")
-    script(src='/javascripts/script.js')
+    script(src='/javascripts/client.js')
     base(href="/")
-  body
-    div(ui-view)
+  body(class="frame vbox", ui-view)

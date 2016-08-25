@@ -1,17 +1,16 @@
-h1 Welcome to Garbage House Chat
-h1 Login
-form
-  table
-    tr
-      td
-        label Username: 
-      td  
-        input(type="text", ng-model="formData.username")
-    tr
-      td
-        label Password: 
-      td
-        input(type="password", ng-model="formData.password")
-    tr
-      td
-        input(type="submit", ng-click="submit()")
+div(class="header")
+  p(class="left") Garbage House Chat
+div(class="content vbox")
+  div(class="loginSignupForm")
+    h2 Login
+    form(class="vbox")
+      label Username:
+      input(type="text", class="textbox", ng-model="formData.username")
+      br
+      label Password: 
+      input(type="password", class="textbox", ng-model="formData.password")
+      br
+      input(type="submit", value="Login", class="button", ng-click="login()")
+    form(class="vbox")
+      input(type="submit", value="Sign Up", class="button", ng-click="getSignup()")
+    div(ng-repeat="alert in alerts track by $index", class="warning", ng-click="closeAlert($index)") {{alert}}
