@@ -4,4 +4,4 @@ Garbage House Chat is a chat created by Michael Huynh for garbage people. If you
 * `git clone https://github.com/mhuynh5757/Garbage-House-Chat.git`
 * `cd` to the appropriate directory.
 * `npm install` to get the packages.
-* `npm start` to start the app.
+* `MONGODB_URI='your_mongodb_uri' node io.js` to start the app.
