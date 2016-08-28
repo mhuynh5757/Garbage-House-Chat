@@ -147,8 +147,13 @@ chatApp.controller('chatController', ['$scope', '$http', '$state', '$filter',
       $scope.message_to_send = null;  
     }
     
+    var keepAliveTimer = setInterval(function() {
+      $http.get('/keepAlive');
+    }, 300000);
+    
     $scope.logout = function() {
       $http.get('/logout').then(function() {
+        clearInterval(keepAliveTimer);
         socket.disconnect();
         $state.go('home', {}, {location: false});
       });

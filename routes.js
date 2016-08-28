@@ -158,6 +158,10 @@ module.exports = function(db) {
       return res.redirect('/unauthorized');
     }
   });
+  
+  router.get('/keepAlive', function(req, res, next) {
+    return res.status(200).send('kept alive');
+  })
 
   router.get('/unauthorized', function(req, res, next) {
     return res.render('unauthorized');
