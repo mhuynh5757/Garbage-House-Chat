@@ -159,9 +159,20 @@ module.exports = function(db) {
     }
   });
   
+  router.post('/username', function(req, res, next) {
+    if (req.isAuthenticated())
+    {
+      return res.status(200).send(req.session.passport.user);
+    }
+    else
+    {
+      return res.redirect('/unauthorized');
+    }
+  });
+  
   router.get('/keepAlive', function(req, res, next) {
     return res.status(200).send('kept alive');
-  })
+  });
 
   router.get('/unauthorized', function(req, res, next) {
     return res.render('unauthorized');

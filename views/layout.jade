@@ -6,10 +6,18 @@ html(ng-app="chatApp")
     link(rel='stylesheet', href='/stylesheets/client.css')
     link(href="https://fonts.googleapis.com/css?family=Open+Sans:300,400", rel="stylesheet")
 
+    script(src='/javascripts/jquery.min.js')
     script(src='/javascripts/angular.min.js')
     script(src='/javascripts/angular-ui-router.min.js')
+    script(src='/javascripts/angular-animate.min.js')
     
     script(src="/socket.io/socket.io.js")
     script(src='/javascripts/client.js')
     base(href="/")
-  body(class="frame vbox", ui-view)
+  body
+    div(ng-controller="headerController" class="header hbox")
+      div(class="left") Garbage House Chat
+      div(ng-show="loggedIn" class="right")
+        div(class="loggedInAs") Logged in as {{current_username}} 
+          a(ng-click="logout()" class="logout") Logout
+    div(class="ui-view-wrapper" ui-view)

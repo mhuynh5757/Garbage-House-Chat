@@ -1,4 +1,22 @@
-var chatApp = angular.module('chatApp', ['ui.router']);
+var chatApp = angular.module('chatApp', ['ui.router', 'ngAnimate'])
+.run(function($rootScope, $window, $state, $animate) {
+  angular.element($window).bind('resize', function() {
+    angular.element('.ui-view-wrapper .content').outerHeight(angular.element(window).innerHeight() - angular.element('.header').outerHeight());
+  })
+  $rootScope.$on('$viewContentLoaded', function(event) {
+    angular.element('.ui-view-wrapper .content').outerHeight(angular.element(window).innerHeight() - angular.element('.header').outerHeight());
+  });
+  $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+    if(fromState.name === 'home')
+    {
+      $animate.enabled(false);
+    }
+    else
+    {
+      $animate.enabled(true);
+    }
+  });
+});
 
 chatApp.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
   $stateProvider
@@ -26,10 +44,27 @@ chatApp.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
 chatApp.controller('homeController', ['$scope', '$http', '$state',
   function($scope, $http, $state) {
-      $http.post('/home').then(
-      function(data) {
-        $state.go(data['data'], {}, {location: false});
-      });
+    $http.post('/home').then(
+    function(data) {
+      $state.go(data['data'], {}, {location: false});
+    });
+  }
+]);
+
+chatApp.controller('headerController', ['$window', '$scope', '$rootScope',
+  function($window, $scope, $rootScope) {    
+    $scope.logout = function() {
+      $scope.loggedIn = false;
+      $rootScope.$broadcast('logout');
+    }
+    
+    $scope.$on('logged in', function() {
+      $scope.loggedIn = true;
+    });
+    
+    $scope.$on('set username', function(event, username) {
+      $scope.current_username = username;
+    });
   }
 ]);
 
@@ -119,9 +154,16 @@ chatApp.controller('loginController', ['$scope', '$http', '$state',
   }
 ]);
 
-chatApp.controller('chatController', ['$scope', '$http', '$state', '$filter',
-  function($scope, $http, $state, $filter) {
+chatApp.controller('chatController', ['$rootScope', '$scope', '$http', '$state', '$filter',
+  function($rootScope, $scope, $http, $state, $filter) {
     var socket = io();
+    
+    angular.element('#text_to_send').focus();
+    
+    $rootScope.$broadcast('logged in');
+    $http.post('/username').then(function(response) {
+      $rootScope.$broadcast('set username', response.data);
+    });
     
     $scope.messages = [];
     socket.on('message', function(msg) {
@@ -151,13 +193,13 @@ chatApp.controller('chatController', ['$scope', '$http', '$state', '$filter',
       $http.get('/keepAlive');
     }, 300000);
     
-    $scope.logout = function() {
+    $scope.$on('logout', function() {
       $http.get('/logout').then(function() {
         clearInterval(keepAliveTimer);
         socket.disconnect();
-        $state.go('home', {}, {location: false});
+        $state.go('login', {}, {location: false});
       });
-    }
+    });
     
     $scope.toAutoscroll = true;
     var chatLog = document.getElementById('chatlog');

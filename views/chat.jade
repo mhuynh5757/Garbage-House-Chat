@@ -1,21 +1,18 @@
-div(class="header")
-  p(class="left") Garbage House Chat
-  p(class="right") Logged in as !{username} 
-    a(ng-click="logout()" class="logout") Logout
 div(class="content hbox")
   div(class="userlist vbox")
-    p(class="header") Users
-    div(class="content")
+    p(class="userlist-header") Users
+    div(class="userlist-content")
       ul
         li(ng-repeat="usr in users track by $index") {{usr}}
   div(class="chatlog vbox")
-    p(class="header") Messages
-    div(autoscroll, class="content", id="chatlog")
+    div(class="test") Test
+    p(class="chatlog-header") Messages
+    div(autoscroll, class="chatlog-content", id="chatlog")
       ul
         li(ng-repeat="msg in messages track by $index")
           small {{msg.timestamp}} 
           |&nbsp;{{msg.message}}
-    div(class="footer")
+    div(class="chatlog-footer")
       form(ng-submit="message()" class="hbox input")
-        input(type="text", ng-model="message_to_send", class="textbox", autofocus)
+        input(type="text", ng-model="message_to_send", class="textbox", id="text_to_send", autofocus)
         input(type="submit", value="Send", class="send-button")

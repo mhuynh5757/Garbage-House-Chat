@@ -4,12 +4,25 @@ http://paletton.com/#uid=73x270kEcF5lhIDrfFTFGrzIglx
 
 html, body {
   font-family: 'Open Sans', sans-serif;
-  height: 100%;
-  width: 100%;
-  margin: 0;
   background: rgba(41, 41, 41, 1);
   font-size: 1.15em;
   color: white;
+}
+
+[ui-view].ng-enter {
+  transition: all .1s .2s linear;
+}
+
+[ui-view].ng-leave {
+  transition: all .1s linear;
+}
+
+[ui-view].ng-enter, [ui-view].ng-leave-active {
+  opacity: 0;
+}
+
+[ui-view].ng-enter-active, [ui-view].ng-leave {
+  opacity: 1;
 }
 
 ::-webkit-scrollbar {
@@ -48,16 +61,26 @@ input[type="text"], input[type="password"] {
   align-content: flex-start;
 }
 
-.expand {
-  flex: 1;
-}
-
 .header {
-  padding-left: 1em;
-  padding-right: 1em;
+  width: 100vw;
+  
+  justify-content: space-between;
+  background-color: rgba(9, 113, 193,1);
 }
 
-.header > .right > .logout {
+.header > .left, .header > .right {
+  padding: 1em;
+}
+
+.header > .right.ng-hide-add, .header > .right.ng-hide-remove {
+  transition: all .1s .2s ease-in-out;
+}
+
+.header > .right.ng-hide {
+  opacity: 0;
+}
+
+.header > .right > .loggedInAs > .logout {
   border-radius: .3em;
   padding: .3em;
   color: white;
@@ -65,47 +88,42 @@ input[type="text"], input[type="password"] {
   cursor: default;
 }
 
-.header > .right > .logout:hover {
+.header > .right > .loggedInAs > .logout:hover {
   background-color: rgba(76, 226, 76 ,1);
 }
 
-.header > .right > .logout:active {
+.header > .right > .loggedInAs > .logout:active {
   background-color: rgba(0, 137, 0, 1);
 }
 
-.frame > .header {
-  order: 0;
-  flex: 0;
-  background-color: rgba(9, 113, 193,1);
+.content {
+  position: absolute;
+  width: 100vw;
 }
 
-.frame > .content {
-  order: 1;
-  flex: 1;
-}
-
-.frame > .content > .loginSignupForm {
-  align-self: center;
+.loginSignupForm {
   padding-top: 3.5em;
   width: 15em;
+  
+  margin: 0 auto;
 }
 
-.frame > .content > .loginSignupForm > .warning {
+.loginSignupForm > .warning {
   background-color: rgba(255, 0, 0,1);
   padding: 1em;
   border-radius: .3em;
   margin-bottom: 1em;
 }
 
-.frame > .content > .loginSignupForm > .warning:hover {
+.loginSignupForm > .warning:hover {
   background-color: rgba(255, 85, 85,1);
 }
 
-.frame > .content > .loginSignupForm > .warning:active {
+.loginSignupForm > .warning:active {
   background-color: rgba(171, 0, 0,1);
 }
 
-.frame > .content > .loginSignupForm > form > .textbox {
+.loginSignupForm > form > .textbox {
   font-family: 'Open Sans', sans-serif;
   flex: 1;
   border-style: none;
@@ -114,7 +132,7 @@ input[type="text"], input[type="password"] {
   font-size: .75em;
 }
 
-.frame > .content > .loginSignupForm > form > .button {
+.loginSignupForm > form > .button {
   font-family: 'Open Sans', sans-serif;
   background-color: rgba(9, 113, 193, 1);
   color: white;
@@ -125,26 +143,16 @@ input[type="text"], input[type="password"] {
   margin-bottom: 1em;
 }
 
-.frame > .content > .loginSignupForm > form > .button:hover {  
+.loginSignupForm > form > .button:hover {  
   background-color: rgba(77, 148, 203, 1);
 }
 
-.frame > .content > .loginSignupForm > form > .button:active {
+.loginSignupForm > form > .button:active {
   background-color: rgba(4, 64, 110, 1);
 }
 
-.frame > .content > .loginSignupForm > form > .button:focus {
+.loginSignupForm > form > .button:focus {
   outline: 0;
-}
-
-.header > .left {
-  float: left;
-  display: inline;
-}
-
-.header > .right {
-  float: right;
-  display: inline;
 }
 
 .userlist {
@@ -155,7 +163,7 @@ input[type="text"], input[type="password"] {
   border-color: rgba(128,128,128,1);
 }
 
-.userlist > .header {
+.userlist > .userlist-header {
   order: 0;
   flex: 0;
   padding: .5em;
@@ -166,20 +174,20 @@ input[type="text"], input[type="password"] {
   border-color: rgba(128,128,128,1);
 }
 
-.userlist > .content {
+.userlist > .userlist-content {
   order: 1;
   flex: 1;
   overflow-y: auto;
   margin: .5em;
 }
 
-.userlist > .content > ul {
+.userlist > .userlist-content > ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.userlist > .content > ul > li {
+.userlist > .userlist-content > ul > li {
   border-bottom: solid 1px;
   border-color: rgba(128,128,128,1);
   margin-right: .5em;
@@ -191,7 +199,11 @@ input[type="text"], input[type="password"] {
   flex: 3;
 }
 
-.chatlog > .header {
+.test {
+  position: absolute;
+}
+
+.chatlog > .chatlog-header {
   order: 0;
   flex: 0;
   padding: .5em;
@@ -202,44 +214,44 @@ input[type="text"], input[type="password"] {
   border-color: rgba(128,128,128,1);
 }
 
-.chatlog > .content {
+.chatlog > .chatlog-content {
   order: 1;
   flex: 1;
   overflow-y: auto;
   margin: .5em;
 }
 
-.chatlog > .content > ul {
+.chatlog > .chatlog-content > ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.chatlog > .content > ul > li {
+.chatlog > .chatlog-content > ul > li {
   border-bottom: solid 1px;
   border-color: rgba(128,128,128,1);
   margin-right: .5em;
   padding: .5em;
 }
 
-.chatlog > .content > ul > li:nth-child(even) {
+.chatlog > .chatlog-content > ul > li:nth-child(even) {
   background-color: rgba(255,255,255,.05);
 }
 
-.chatlog > .content > ul > li > small {
+.chatlog > .chatlog-content > ul > li > small {
   color: rgba(255, 146, 0, 1);
   border-right: solid 1px;
   border-color: rgba(128,128,128,1);
   font-weight: 300;
 }
 
-.chatlog > .footer {
+.chatlog > .chatlog-footer {
   order: 2;
   flex: 0;
   padding: .5em;
 }
 
-.chatlog > .footer > .input > .textbox {
+.chatlog > .chatlog-footer > .input > .textbox {
   font-family: 'Open Sans', sans-serif;
   flex: 1;
   border-style: none;
@@ -250,7 +262,7 @@ input[type="text"], input[type="password"] {
   font-size: .85em;
 }
 
-.chatlog > .footer > .input > .send-button {
+.chatlog > .chatlog-footer > .input > .send-button {
   font-family: 'Open Sans', sans-serif;
   background-color: rgba(9, 113, 193,1);
   color: white;
@@ -262,14 +274,14 @@ input[type="text"], input[type="password"] {
   padding-right: 1em;
 }
 
-.chatlog > .footer > .input > .send-button:hover {  
+.chatlog > .chatlog-footer > .input > .send-button:hover {  
   background-color: rgba(77, 148, 203,1);
 }
 
-.chatlog > .footer > .input > .send-button:active {
+.chatlog > .chatlog-footer > .input > .send-button:active {
   background-color: rgba(4, 64, 110, 1);
 }
 
-.chatlog > .footer > .input > .send-button:focus {
+.chatlog > .chatlog-footer > .input > .send-button:focus {
   outline: 0;
 }
