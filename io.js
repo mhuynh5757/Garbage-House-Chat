@@ -16,10 +16,13 @@ mongodb.MongoClient.connect(url, function(err, db) {
     function update_users() {
       connected_users = [];
       Object.keys(io.sockets.sockets).forEach(function (key) {
-        var _user = io.sockets.sockets[key].request.session.passport
-        if (_user != undefined && connected_users.indexOf(_user.user.nickname) < 0)
+        var _user = io.sockets.sockets[key].request.session.passport;
+        if (_user != undefined)
         {
-          connected_users.push(_user.user.nickname);
+          if(connected_users.indexOf(_user.user.nickname) < 0)
+          {
+            connected_users.push(_user.user.nickname);
+          }
         }
       });
       io.emit('connected users', connected_users);
