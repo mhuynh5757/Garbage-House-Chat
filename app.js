@@ -39,11 +39,13 @@ module.exports = function(db) {
   app.use('/', routes);
 
   passport.serializeUser(function(user, done) {
-    done(null, user.username);
+    done(null, {username: user.username, nickname: user.nickname});
   });
 
   passport.deserializeUser(function(user, done) {
-    done(null, user);
+    db.collection('users').findOne({'username': user.username}, function(err, _user) {
+      done(null, _user);
+    });
   });
 
   // catch 404 and forward to error handler

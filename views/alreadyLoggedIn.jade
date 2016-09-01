@@ -1,0 +1,5 @@
+div(class="content")
+  div(ng-controller="alreadyLoggedInController", class="alreadyLoggedIn")
+    h2 You're already logged in as !{username}.
+    div(class="button primary-button", ui-sref="chat") Go to Chat
+    div(class="button secondary-button", ng-click="logout()") Log Out

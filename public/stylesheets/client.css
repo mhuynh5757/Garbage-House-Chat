@@ -7,6 +7,7 @@ html, body {
   background: rgba(41, 41, 41, 1);
   font-size: 1.15em;
   color: white;
+  overflow: hidden;
 }
 
 [ui-view].ng-enter {
@@ -68,8 +69,13 @@ input[type="text"], input[type="password"] {
   background-color: rgba(9, 113, 193,1);
 }
 
-.header > .left, .header > .right {
+.header > .left {
   padding: 1em;
+}
+
+.header > .right {
+  padding: 1em;
+  padding-right: .75em;
 }
 
 .header > .right.ng-hide-add, .header > .right.ng-hide-remove {
@@ -81,19 +87,42 @@ input[type="text"], input[type="password"] {
 }
 
 .header > .right > .loggedInAs > .logout {
-  border-radius: .3em;
-  padding: .3em;
   color: white;
-  background-color: rgba(0, 220, 0, 1);
-  cursor: default;
+  padding: .25em;
 }
 
 .header > .right > .loggedInAs > .logout:hover {
-  background-color: rgba(76, 226, 76 ,1);
+  color: rgba(255, 0, 0, 1);;
 }
 
 .header > .right > .loggedInAs > .logout:active {
-  background-color: rgba(0, 137, 0, 1);
+  color: rgba(171, 0, 0, 1);
+}
+
+.header > .right > .loggedInAs > .settingsToggle {
+  color: white;
+  padding: .25em;
+}
+
+.header > .right > .loggedInAs > .settingsToggle > .settingsCog {
+  transition: transform 1s ease-in-out;
+}
+
+.header > .right > .loggedInAs > .settingsToggle > .settingsCog.active {
+  transform: rotate(360deg);
+}
+
+.header > .right > .loggedInAs > .settingsToggle:hover {  
+  color: rgba(0, 220, 0, 1);
+}
+
+.header > .right > .loggedInAs > .settingsToggle:active {
+  color: rgba(0, 137, 0, 1);
+}
+
+.header > .right > .loggedInAs > .username {
+  padding-left: .25em;
+  padding-right: .25em;
 }
 
 .content {
@@ -108,22 +137,46 @@ input[type="text"], input[type="password"] {
   margin: 0 auto;
 }
 
-.loginSignupForm > .warning {
-  background-color: rgba(255, 0, 0,1);
+.alreadyLoggedIn {
+  text-align: center;
+  
+  padding-top: 3.5em;
+  width: 25em;
+  
+  margin: 0 auto;
+}
+
+.alert {
   padding: 1em;
   border-radius: .3em;
   margin-bottom: 1em;
 }
 
-.loginSignupForm > .warning:hover {
-  background-color: rgba(255, 85, 85,1);
+.alert.fail {
+  background-color: rgba(255, 0, 0,1);
 }
 
-.loginSignupForm > .warning:active {
-  background-color: rgba(171, 0, 0,1);
+.alert.fail:hover {
+  background-color: rgba(255, 85, 85, 1);
 }
 
-.loginSignupForm > form > .textbox {
+.alert.fail:active {
+  background-color: rgba(171, 0, 0, 1);
+}
+
+.alert.success {
+  background-color: rgba(9, 113, 193, 1);
+}
+
+.alert.success:hover {
+  background-color: rgba(77, 148, 203, 1);
+}
+
+.alert.success:active {
+  background-color: rgba(4, 64, 110, 1);
+}
+
+form > .textbox {
   font-family: 'Open Sans', sans-serif;
   flex: 1;
   border-style: none;
@@ -132,10 +185,8 @@ input[type="text"], input[type="password"] {
   font-size: .75em;
 }
 
-.loginSignupForm > form > .button {
+.button {
   font-family: 'Open Sans', sans-serif;
-  background-color: rgba(9, 113, 193, 1);
-  color: white;
   border-style: none;
   border-radius: .3em;
   font-size: 1em;
@@ -143,16 +194,34 @@ input[type="text"], input[type="password"] {
   margin-bottom: 1em;
 }
 
-.loginSignupForm > form > .button:hover {  
+.button:focus {
+  outline: 0;
+}
+
+.primary-button {
+  color: white;
+  background-color: rgba(9, 113, 193, 1);
+}
+
+.primary-button:hover {  
   background-color: rgba(77, 148, 203, 1);
 }
 
-.loginSignupForm > form > .button:active {
+.primary-button:active {
   background-color: rgba(4, 64, 110, 1);
 }
 
-.loginSignupForm > form > .button:focus {
-  outline: 0;
+.secondary-button {
+  color: white;
+  background-color: rgba(0, 220, 0, 1);
+}
+
+.secondary-button:hover {  
+  background-color: rgba(76, 226, 76, 1);
+}
+
+.secondary-button:active {
+  background-color: rgba(0, 137, 0, 1);
 }
 
 .userlist {
@@ -177,7 +246,7 @@ input[type="text"], input[type="password"] {
 .userlist > .userlist-content {
   order: 1;
   flex: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
   margin: .5em;
 }
 
@@ -199,8 +268,70 @@ input[type="text"], input[type="password"] {
   flex: 3;
 }
 
-.test {
+.settingsCheckbox {
+  display: none;
+}
+
+#settings-overlay {
   position: absolute;
+
+  transition: right 1s ease-in-out;
+
+  z-index: 2;
+  width: 15em;
+  right: -15em;
+  
+  background-color: rgba(41, 41, 41, 1);
+}
+
+#settings-overlay.display {
+  right: 0;
+}
+
+#settings-overlay > .container {
+  height: calc(100%);
+  width: calc(100%);
+}
+
+#settings-overlay > .container > .settings-header {
+  order: 0;
+  flex: 0;
+  
+  border-bottom: solid 1px;
+  border-color: rgba(128,128,128,1);
+  padding: 1em;
+}
+
+#settings-overlay > .container > .settings-content {
+  order: 1;
+  flex: 1;
+  
+  padding: .5em;
+  margin: .5em;
+}
+
+#dim-overlay {
+  position: absolute;
+  
+  top: 0;
+  left: 0;
+  
+  width: 100%;
+  height: 100%;
+
+  transition: opacity 1s ease-in-out, visibility 1s, pointer-events 0s;
+  
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  background-color: rgba(0, 0, 0, .75);
+}
+
+#dim-overlay.display {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .chatlog > .chatlog-header {
@@ -217,7 +348,7 @@ input[type="text"], input[type="password"] {
 .chatlog > .chatlog-content {
   order: 1;
   flex: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
   margin: .5em;
 }
 
@@ -246,12 +377,15 @@ input[type="text"], input[type="password"] {
 }
 
 .chatlog > .chatlog-footer {
+  border-top: solid 1px;
+  border-color: rgba(128,128,128,1);
+  
   order: 2;
   flex: 0;
   padding: .5em;
 }
 
-.chatlog > .chatlog-footer > .input > .textbox {
+.input > .form-textbox {
   font-family: 'Open Sans', sans-serif;
   flex: 1;
   border-style: none;
@@ -259,29 +393,28 @@ input[type="text"], input[type="password"] {
   border-bottom-left-radius: .3em;
   padding: .25em;
   font-weight: 400;
-  font-size: .85em;
+  font-size: .65em;
 }
 
-.chatlog > .chatlog-footer > .input > .send-button {
+.input > .form-button {
   font-family: 'Open Sans', sans-serif;
   background-color: rgba(9, 113, 193,1);
   color: white;
   border-style: none;
   border-top-right-radius: .3em;
   border-bottom-right-radius: .3em;
-  font-size: .75em;
-  padding-left: 1em;
-  padding-right: 1em;
+  font-size: .65em;
+  padding: .75em;
 }
 
-.chatlog > .chatlog-footer > .input > .send-button:hover {  
+.input > .form-button:hover {  
   background-color: rgba(77, 148, 203,1);
 }
 
-.chatlog > .chatlog-footer > .input > .send-button:active {
+.input > .form-button:active {
   background-color: rgba(4, 64, 110, 1);
 }
 
-.chatlog > .chatlog-footer > .input > .send-button:focus {
+.input > .form-button:focus {
   outline: 0;
 }

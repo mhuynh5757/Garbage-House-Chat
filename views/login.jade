@@ -8,7 +8,7 @@ div(class="content")
       label Password: 
       input(type="password", class="textbox", ng-model="formData.password")
       br
-      input(type="submit", value="Login", class="button", ng-click="login()")
+      input(type="submit", value="Login", class="button primary-button", ng-click="login()")
     form(class="vbox")
-      input(type="submit", value="Sign Up", class="button", ng-click="getSignup()")
-    div(ng-repeat="alert in alerts track by $index", class="warning", ng-click="closeAlert($index)") {{alert}}
+      input(type="submit", value="Sign Up", class="button secondary-button", ng-click="getSignup()")
+    div(ng-repeat="alert in alerts track by $index", class="alert {{alert.class}}", ng-click="closeAlert($index)") {{alert.message}}

@@ -3,6 +3,7 @@ html(ng-app="chatApp")
   head
     title Chat
     link(rel='stylesheet', href='/stylesheets/normalize.css')
+    link(rel='stylesheet', href='/stylesheets/font-awesome.min.css')
     link(rel='stylesheet', href='/stylesheets/client.css')
     link(href="https://fonts.googleapis.com/css?family=Open+Sans:300,400", rel="stylesheet")
 
@@ -18,6 +19,12 @@ html(ng-app="chatApp")
     div(ng-controller="headerController" class="header hbox")
       div(class="left") Garbage House Chat
       div(ng-show="loggedIn" class="right")
-        div(class="loggedInAs") Logged in as {{current_username}} 
-          a(ng-click="logout()" class="logout") Logout
+        div(class="loggedInAs")
+          label(for="settingsToggle" class="settingsToggle")
+            i(class="settingsCog fa fa-cog", ng-class="{active: showSettings}")
+          input(id="settingsToggle", class="settingsCheckbox", type="checkbox", ng-model="showSettings", ng-change="toggleSettings()")
+          i(class="fa fa-user username")
+          | {{current_nickname}} 
+          a(ng-click="logout()" class="logout")
+            i(class="fa fa-sign-out")
     div(class="ui-view-wrapper" ui-view)

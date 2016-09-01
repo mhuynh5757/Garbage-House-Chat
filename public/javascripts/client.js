@@ -1,52 +1,47 @@
 var chatApp = angular.module('chatApp', ['ui.router', 'ngAnimate'])
 .run(function($rootScope, $window, $state, $animate) {
-  angular.element($window).bind('resize', function() {
+  function resizeContent() {
     angular.element('.ui-view-wrapper .content').outerHeight(angular.element(window).innerHeight() - angular.element('.header').outerHeight());
-  })
-  $rootScope.$on('$viewContentLoaded', function(event) {
-    angular.element('.ui-view-wrapper .content').outerHeight(angular.element(window).innerHeight() - angular.element('.header').outerHeight());
-  });
-  $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-    if(fromState.name === 'home')
-    {
-      $animate.enabled(false);
-    }
-    else
-    {
-      $animate.enabled(true);
-    }
-  });
+  }
+  angular.element($window).on('resize', resizeContent);
+  $rootScope.$on('$viewContentLoaded', resizeContent);
 });
 
 chatApp.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+  $urlRouterProvider.otherwise('/home');
   $stateProvider
   .state('home', {
-    url: '/',
+    url: '/home',
     controller: 'homeController'
   })
   .state('signup', {
-    url: '/',
+    url: '/signup',
     templateUrl: 'signup',
     controller: 'signupController'
   })
+  .state('verified', {
+    url: '/verified',
+    templateUrl: 'verified',
+    controller: 'verifiedController'
+  })
   .state('login', {
-    url: '/',
+    url: '/login',
+    params: {signedUp: false},
     templateUrl: 'login',
     controller: 'loginController'
   })
   .state('chat', {
-    url: '/',
+    url: '/chat',
     templateUrl: 'chat',
     controller: 'chatController'
   });
-  $locationProvider.html5Mode(true);
 });
 
-chatApp.controller('homeController', ['$scope', '$http', '$state',
-  function($scope, $http, $state) {
+chatApp.controller('homeController', ['$scope', '$http', '$state', '$stateParams',
+  function($scope, $http, $state, $stateParams) {
     $http.post('/home').then(
-    function(data) {
-      $state.go(data['data'], {}, {location: false});
+    function(response) {
+      $state.go(response.data, {signedUp: false});
     });
   }
 ]);
@@ -62,9 +57,18 @@ chatApp.controller('headerController', ['$window', '$scope', '$rootScope',
       $scope.loggedIn = true;
     });
     
-    $scope.$on('set username', function(event, username) {
-      $scope.current_username = username;
+    $scope.$on('set nickname', function(event, nickname) {
+      $scope.current_nickname = nickname;
     });
+    
+    $scope.showSettings = false;
+    $scope.$on('set settings checkbox', function(event, showSettings) {
+      $scope.showSettings = showSettings;
+    });
+    
+    $scope.toggleSettings = function() {
+      $rootScope.$broadcast('toggle settings');
+    }
   }
 ]);
 
@@ -78,20 +82,13 @@ chatApp.controller('signupController', ['$scope', '$http', '$state',
       {
         $http.post('/signup', $scope.formData).then(
         function(response) {
-          if (response.data.authenticated == undefined)
+          if (response.data.success == false)
           {
-            if (response.data.message === 'Missing credentials')
-            {
-              $scope.alerts.push(response.data.message + '.');
-            }
-            else
-            {
-              $scope.alerts.push(response.data.message);
-            }
+            $scope.alerts.push(response.data.message);
           }
           else
           {
-            $state.go(response.data.redirect, {}, {location: false});
+            $state.go(response.data.redirect, {signedUp: true});
           }
         });
       }
@@ -116,14 +113,19 @@ chatApp.controller('signupController', ['$scope', '$http', '$state',
     }
     
     $scope.getLogin = function() {
-      $state.go('login', {}, {location: false});
+      $state.go('login');
     }
   }
 ]);
 
-chatApp.controller('loginController', ['$scope', '$http', '$state',
-  function($scope, $http, $state) {
+chatApp.controller('loginController', ['$scope', '$http', '$state', '$stateParams',
+  function($scope, $http, $state, $stateParams) {
     $scope.alerts = [];
+    
+    if($stateParams.signedUp) {
+      $scope.alerts.push({message: 'Successfully signed up. Please check your e-mail to verify your account.', class: 'success'});
+    }
+    
     $scope.login = function() {
       $http.post('/login', $scope.formData).then(
       function(response) {
@@ -131,38 +133,54 @@ chatApp.controller('loginController', ['$scope', '$http', '$state',
         {
           if (response.data.message === 'Missing credentials')
           {
-            $scope.alerts.push(response.data.message + '.');
+            $scope.alerts.push({message: response.data.message + '.', class: 'fail'});
           }
           else
           {
-            $scope.alerts.push(response.data.message);
+            $scope.alerts.push({message: response.data.message, class: 'fail'});
           }
         }
         else
         {
-          $state.go(response.data.redirect, {}, {location: false});
+          $state.go(response.data.redirect);
         }
       });
     }
     $scope.closeAlert = function(index) {
       $scope.alerts.splice(index, 1);
     }
-    
-    $scope.getSignup = function() {
-      $state.go('signup', {}, {location: false});
+  }
+]);
+
+chatApp.controller('alreadyLoggedInController', ['$templateCache', '$state', '$scope', '$http',
+  function($templateCache, $state, $scope, $http) {
+    $scope.logout = function() {
+      $templateCache.remove('login');
+      $http.get('/logout').then(function() {
+        $state.go('home');
+      });
     }
   }
 ]);
 
-chatApp.controller('chatController', ['$rootScope', '$scope', '$http', '$state', '$filter',
-  function($rootScope, $scope, $http, $state, $filter) {
+chatApp.controller('chatController', ['$window', '$timeout', '$rootScope', '$scope', '$http', '$state', '$filter',
+  function($window, $timeout, $rootScope, $scope, $http, $state, $filter) {
+    $timeout(function() {
+      function resizeChatlog() {
+        var settingsOverlay = angular.element('#settings-overlay');
+        settingsOverlay.outerHeight(angular.element('.chatlog').outerHeight());
+      }
+      resizeChatlog();
+      angular.element($window).on('resize', resizeChatlog);
+    });
+    
     var socket = io();
     
     angular.element('#text_to_send').focus();
     
     $rootScope.$broadcast('logged in');
-    $http.post('/username').then(function(response) {
-      $rootScope.$broadcast('set username', response.data);
+    $http.post('/getNickname').then(function(response) {
+      $rootScope.$broadcast('set nickname', response.data);
     });
     
     $scope.messages = [];
@@ -197,7 +215,7 @@ chatApp.controller('chatController', ['$rootScope', '$scope', '$http', '$state',
       $http.get('/logout').then(function() {
         clearInterval(keepAliveTimer);
         socket.disconnect();
-        $state.go('login', {}, {location: false});
+        $state.go('login');
       });
     });
     
@@ -209,6 +227,20 @@ chatApp.controller('chatController', ['$rootScope', '$scope', '$http', '$state',
         chatLog.scrollTop = chatLog.scrollHeight;
       }
     }
+    
+    $scope.showSettings = false;
+    $scope.toggleSettings = function() {
+      $scope.showSettings = false;
+      angular.element('#text_to_send').focus();
+      $rootScope.$broadcast('set settings checkbox', false);
+    }
+    $scope.$on('toggle settings', function() {
+      $scope.showSettings = !$scope.showSettings;
+      if(!$scope.showSettings)
+      {
+        angular.element('#text_to_send').focus();
+      }
+    });
   }
 ]);
 

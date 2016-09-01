@@ -9,6 +9,7 @@ mongodb.MongoClient.connect(url, function(err, db) {
   else
   {
     var _server = require('./server.js')(db);
+    
     var io = require('socket.io')(_server.server);
     
     var connected_users = [];
@@ -16,9 +17,9 @@ mongodb.MongoClient.connect(url, function(err, db) {
       connected_users = [];
       Object.keys(io.sockets.sockets).forEach(function (key) {
         var _user = io.sockets.sockets[key].request.session.passport
-        if (_user != undefined && connected_users.indexOf(_user.user) < 0)
+        if (_user != undefined && connected_users.indexOf(_user.user.nickname) < 0)
         {
-          connected_users.push(_user.user);
+          connected_users.push(_user.user.nickname);
         }
       });
       io.emit('connected users', connected_users);
@@ -39,7 +40,11 @@ mongodb.MongoClient.connect(url, function(err, db) {
         
         socket.on('message', function(msg) {
           if (!(msg === null || msg === '')) {
-            io.emit('message', socket.request.session.passport.user + ': ' + msg);
+            if (msg.indexOf('/mail') == 0) {
+            }
+            else {
+              io.emit('message', socket.request.session.passport.user.nickname + ': ' + msg);
+            }
           }
         });
       }

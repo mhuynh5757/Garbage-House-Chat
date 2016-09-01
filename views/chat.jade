@@ -5,7 +5,6 @@ div(class="content hbox")
       ul
         li(ng-repeat="usr in users track by $index") {{usr}}
   div(class="chatlog vbox")
-    div(class="test") Test
     p(class="chatlog-header") Messages
     div(autoscroll, class="chatlog-content", id="chatlog")
       ul
@@ -14,5 +13,14 @@ div(class="content hbox")
           |&nbsp;{{msg.message}}
     div(class="chatlog-footer")
       form(ng-submit="message()" class="hbox input")
-        input(type="text", ng-model="message_to_send", class="textbox", id="text_to_send", autofocus)
-        input(type="submit", value="Send", class="send-button")
+        input(type="text", autocomplete="off", ng-model="message_to_send", class="form-textbox", id="text_to_send", autofocus)
+        input(type="submit", value="Send", class="form-button")
+  div(id="settings-overlay", ng-class="{display: showSettings}")
+    div(class="container vbox")
+      div(class="settings-header") Settings
+      div(class="settings-content")
+        div(class="nickname") Nickname
+          form(ng-submit="setNickname()" class="hbox input")
+            input(type="text", autocomplete="off", class="form-textbox")
+            input(type="submit", value="Set", class="form-button")
+  div(id="dim-overlay", ng-click="toggleSettings()", ng-class="{display: showSettings}")
