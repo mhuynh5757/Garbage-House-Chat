@@ -174,7 +174,7 @@ module.exports = function(db) {
           }
         },
         function(err, result) {
-          return res.redirect('/verified');
+          return res.redirect('/#/verified');
         });
       });
     }
@@ -185,7 +185,7 @@ module.exports = function(db) {
   });
   
   router.get('/verified', function(req, res, next) {
-    return res.render('verified');
+    return res.status(200).send('');
   });
   
   router.get('/chat', function(req, res, next) {

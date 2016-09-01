@@ -26,7 +26,7 @@ chatApp.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
   })
   .state('login', {
     url: '/login',
-    params: {signedUp: false},
+    params: {forwardedAlerts: []},
     templateUrl: 'login',
     controller: 'loginController'
   })
@@ -41,7 +41,7 @@ chatApp.controller('homeController', ['$scope', '$http', '$state', '$stateParams
   function($scope, $http, $state, $stateParams) {
     $http.post('/home').then(
     function(response) {
-      $state.go(response.data, {signedUp: false});
+      $state.go(response.data);
     });
   }
 ]);
@@ -88,7 +88,7 @@ chatApp.controller('signupController', ['$scope', '$http', '$state',
           }
           else
           {
-            $state.go(response.data.redirect, {signedUp: true});
+            $state.go(response.data.redirect, {forwardedAlerts: [{message: 'Successfully signed up. Please check your e-mail to verify your account.', class: 'success'}]});
           }
         });
       }
@@ -118,12 +118,24 @@ chatApp.controller('signupController', ['$scope', '$http', '$state',
   }
 ]);
 
+chatApp.controller('verifiedController', ['$state',
+  function($state) {
+    console.log('in verified');
+    $state.go('login', {forwardedAlerts: [{message: 'Successfully verified. You may log in now.', class: 'success'}]});
+  }
+]);
+
 chatApp.controller('loginController', ['$scope', '$http', '$state', '$stateParams',
   function($scope, $http, $state, $stateParams) {
     $scope.alerts = [];
     
-    if($stateParams.signedUp) {
-      $scope.alerts.push({message: 'Successfully signed up. Please check your e-mail to verify your account.', class: 'success'});
+    console.log($stateParams);
+    
+    if($stateParams.forwardedAlerts != undefined) {
+      if($stateParams.forwardedAlerts.length > 0)
+      {
+        $scope.alerts = $stateParams.forwardedAlerts;
+      }
     }
     
     $scope.login = function() {
