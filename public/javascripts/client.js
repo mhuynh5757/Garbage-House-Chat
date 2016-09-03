@@ -120,7 +120,6 @@ chatApp.controller('signupController', ['$scope', '$http', '$state',
 
 chatApp.controller('verifiedController', ['$state',
   function($state) {
-    console.log('in verified');
     $state.go('login', {forwardedAlerts: [{message: 'Successfully verified. You may log in now.', class: 'success'}]});
   }
 ]);
@@ -128,9 +127,6 @@ chatApp.controller('verifiedController', ['$state',
 chatApp.controller('loginController', ['$scope', '$http', '$state', '$stateParams',
   function($scope, $http, $state, $stateParams) {
     $scope.alerts = [];
-    
-    console.log($stateParams);
-    
     if($stateParams.forwardedAlerts != undefined) {
       if($stateParams.forwardedAlerts.length > 0)
       {
@@ -196,11 +192,46 @@ chatApp.controller('chatController', ['$window', '$timeout', '$rootScope', '$sco
     });
     
     $scope.messages = [];
+    socket.on('chatlog', function(chatlog) {
+      $scope.$apply(function() {
+        chatlog.forEach(function(msg) {
+          $scope.messages.push({
+            'nickname': msg.nickname,
+            'message': msg.message,
+            'timestamp': $filter('date')(msg.timestamp, 'MM/dd/yyyy hh:mm:ss a'),
+            '_time': msg.timestamp
+          });
+        });
+        $scope.messages.sort(function(a, b) {
+          if (a._time > b._time) {
+            return 1;
+          }
+          if (a._time < b._time) {
+            return -1;
+          }
+          return 0;
+        });
+      });
+      scrollToBottom();
+    });
+    
     socket.on('message', function(msg) {
       $scope.$apply(function() {
+        var time = Date.now();
         $scope.messages.push({
-          'message': msg,
-          'timestamp': $filter('date')(new Date(), 'hh:mm:ss a')
+          'nickname': msg.nickname,
+          'message': msg.message,
+          'timestamp': $filter('date')(time, 'MM/dd/yyyy hh:mm:ss a'),
+          '_time': time
+        });
+        $scope.messages.sort(function(a, b) {
+          if (a._time > b._time) {
+            return 1;
+          }
+          if (a._time < b._time) {
+            return -1;
+          }
+          return 0;
         });
       });
       scrollToBottom();
@@ -211,6 +242,15 @@ chatApp.controller('chatController', ['$window', '$timeout', '$rootScope', '$sco
       $scope.$apply(function() {
         $scope.users = users;
       });
+    });
+    
+    $scope.nickname_to_send = '';
+    $scope.setNickname = function() {
+      socket.emit('set nickname', $scope.nickname_to_send);
+    }
+    
+    socket.on('get nickname', function(nickname) {
+      $rootScope.$broadcast('set nickname', nickname);
     });
     
     $scope.message_to_send = null; 

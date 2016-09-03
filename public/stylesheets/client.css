@@ -10,6 +10,18 @@ html, body {
   overflow: hidden;
 }
 
+@media only screen and (max-width: 768px) {
+  html, body {
+    font-size: 1em;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  html, body {
+    font-size: .85em;
+  }
+}
+
 [ui-view].ng-enter {
   transition: all .1s .2s linear;
 }
@@ -104,13 +116,13 @@ input[type="text"], input[type="password"] {
   padding: .25em;
 }
 
-.header > .right > .loggedInAs > .settingsToggle > .settingsCog {
+/*.header > .right > .loggedInAs > .settingsToggle > .settingsCog {
   transition: transform 1s ease-in-out;
 }
 
 .header > .right > .loggedInAs > .settingsToggle > .settingsCog.active {
   transform: rotate(360deg);
-}
+}*/
 
 .header > .right > .loggedInAs > .settingsToggle:hover {  
   color: rgba(0, 220, 0, 1);
@@ -369,11 +381,29 @@ form > .textbox {
   background-color: rgba(255,255,255,.05);
 }
 
-.chatlog > .chatlog-content > ul > li > small {
+.chatlog > .chatlog-content > ul > li > .message-header > {
+  /*padding-right: .25em;*/
+}
+
+.chatlog > .chatlog-content > ul > li > .message-header > .nickname {
+  /*padding-left: .25em;*/
+  display: inline-block;
+}
+
+.chatlog > .chatlog-content > ul > li > .message-header > .timestamp {
+  display: inline-block;
+  
   color: rgba(255, 146, 0, 1);
-  border-right: solid 1px;
   border-color: rgba(128,128,128,1);
+  font-size: .5em;
   font-weight: 300;
+  
+  flex-shrink: 0;
+  padding-left: 1em;
+}
+
+.chatlog > .chatlog-content > ul > li > .message-content {
+  padding-left: 1em;
 }
 
 .chatlog > .chatlog-footer {

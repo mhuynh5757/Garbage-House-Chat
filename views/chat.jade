@@ -9,8 +9,10 @@ div(class="content hbox")
     div(autoscroll, class="chatlog-content", id="chatlog")
       ul
         li(ng-repeat="msg in messages track by $index")
-          small {{msg.timestamp}} 
-          |&nbsp;{{msg.message}}
+          div(class="message-header")
+            div(class="nickname") {{msg.nickname}}
+            div(class="timestamp") {{msg.timestamp}} 
+          div(class="message-content") {{msg.message}}
     div(class="chatlog-footer")
       form(ng-submit="message()" class="hbox input")
         input(type="text", autocomplete="off", ng-model="message_to_send", class="form-textbox", id="text_to_send", autofocus)
@@ -21,6 +23,6 @@ div(class="content hbox")
       div(class="settings-content")
         div(class="nickname") Nickname
           form(ng-submit="setNickname()" class="hbox input")
-            input(type="text", autocomplete="off", class="form-textbox")
+            input(type="text", autocomplete="off", class="form-textbox", ng-model="nickname_to_send")
             input(type="submit", value="Set", class="form-button")
   div(id="dim-overlay", ng-click="toggleSettings()", ng-class="{display: showSettings}")

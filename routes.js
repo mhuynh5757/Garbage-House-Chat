@@ -128,7 +128,6 @@ module.exports = function(db) {
               'email': req.body.email,
               'verified': false
             };
-            console.log('generated new user with key: ' + randomKey);
             db.collection('users').insert(newUser, function(err, result) {
               var mailOptions = {
                 from: '"Garbage House Swagministrator" <swagmin@garbage.house>',
@@ -136,11 +135,10 @@ module.exports = function(db) {
                 subject: 'Garbage House Chat Account Created',
                 text: 'Thanks for signing up!\nPlease verify your account using this link:\nhttp://chat.garbage.house/verify?username=' + req.body.username + '&key=' + randomKey
               };
-              transporter.sendMail(mailOptions, function(err, info) {
-                return res.status(200).send({success: true, redirect: 'login', message: 'Successfully signed up.'});
-              });
+              transporter.sendMail(mailOptions);
             });
           });
+          return res.status(200).send({success: true, redirect: 'login', message: 'Successfully signed up.'});
         });
       });
     }
@@ -202,18 +200,9 @@ module.exports = function(db) {
   router.post('/getNickname', function(req, res, next) {
     if (req.isAuthenticated())
     {
-      return res.status(200).send(req.session.passport.user.nickname);
-    }
-    else
-    {
-      return res.redirect('/unauthorized');
-    }
-  });
-  
-  router.post('/setNickname', function(req, res, next) {
-    if (req.isAuthenticated())
-    {
-      return res.status(200).send(req.session.passport.user);
+      db.collection('users').findOne({'username': req.session.passport.user.username}, function(err, result) {
+        return res.status(200).send(result.nickname);
+      });
     }
     else
     {

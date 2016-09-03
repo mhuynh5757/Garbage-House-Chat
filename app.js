@@ -6,7 +6,7 @@ module.exports = function(db) {
   var cookieParser = require('cookie-parser');
   var bodyParser = require('body-parser');
   var expressSession = require('express-session');
-  // var flash = require('connect-flash');
+  var MongoStore = require('connect-mongo')(expressSession);
   var passport = require('passport');
   var routes = require('./routes')(db);
   var app = express();
@@ -24,12 +24,12 @@ module.exports = function(db) {
 
   var sessionMiddleware = expressSession({
     secret: 'yoloswagorghini',
+    store: new MongoStore({'db': db}),
     resave: false,
     saveUninitialized: false
   });
 
   app.use(sessionMiddleware);
-  // app.use(flash());
   
   app.use(passport.initialize());
   app.use(passport.session());
