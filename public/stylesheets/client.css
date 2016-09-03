@@ -10,6 +10,11 @@ html, body {
   overflow: hidden;
 }
 
+.always-visible.ps-container > .ps-scrollbar-x-rail,
+.always-visible.ps-container > .ps-scrollbar-y-rail {
+  opacity: 0.6;
+}
+
 @media only screen and (max-width: 768px) {
   html, body {
     font-size: 1em;
@@ -38,19 +43,19 @@ html, body {
   opacity: 1;
 }
 
-::-webkit-scrollbar {
-  width: .25em;
+/*::-webkit-scrollbar {
+  width: .35em;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255,255,255,0.25);
   border-radius: 1em;
+  background-color: rgba(255,255,255,0.25);
 }
 
 ::-webkit-scrollbar-thumb {
   border-radius: 1em;
   background-color: rgba(255,255,255,0.5);
-}
+}*/
 
 input[type="text"], input[type="password"] {
   line-height: 2em;
@@ -143,10 +148,16 @@ input[type="text"], input[type="password"] {
 }
 
 .loginSignupForm {
-  padding-top: 3.5em;
+  padding-top: 10vh;
   width: 15em;
   
   margin: 0 auto;
+}
+
+@media only screen and (max-width: 768px) {
+  .loginSignupForm {
+    padding-top: 0;
+  }
 }
 
 .alreadyLoggedIn {
@@ -203,7 +214,7 @@ form > .textbox {
   border-radius: .3em;
   font-size: 1em;
   padding: 1em;
-  margin-bottom: 1em;
+  /*margin-bottom: 1em;*/
 }
 
 .button:focus {
@@ -241,7 +252,7 @@ form > .textbox {
   flex: 1;
   border-right: solid;
   border-width: 1px;
-  border-color: rgba(128,128,128,1);
+  border-color: rgba(128,128,128,.5);
 }
 
 .userlist > .userlist-header {
@@ -252,27 +263,26 @@ form > .textbox {
   color: rgba(0, 220, 0, 1);
   border-bottom: solid;
   border-width: 1px;
-  border-color: rgba(128,128,128,1);
+  border-color: rgba(128,128,128,.5);
 }
 
 .userlist > .userlist-content {
   order: 1;
   flex: 1;
   overflow-y: scroll;
-  margin: .5em;
 }
 
 .userlist > .userlist-content > ul {
   list-style: none;
   padding: 0;
   margin: 0;
+  padding: .5em;
 }
 
 .userlist > .userlist-content > ul > li {
   border-bottom: solid 1px;
-  border-color: rgba(128,128,128,1);
-  margin-right: .5em;
-  padding: .5em;
+  border-color: rgba(128,128,128,.25);
+  padding-bottom: .25em;
 }
 
 .chatlog {
@@ -310,7 +320,7 @@ form > .textbox {
   flex: 0;
   
   border-bottom: solid 1px;
-  border-color: rgba(128,128,128,1);
+  border-color: rgba(128,128,128,.5);
   padding: 1em;
 }
 
@@ -354,14 +364,15 @@ form > .textbox {
   color: rgba(0, 220, 0, 1);
   border-bottom: solid;
   border-width: 1px;
-  border-color: rgba(128,128,128,1);
+  border-color: rgba(128,128,128,.5);
 }
 
 .chatlog > .chatlog-content {
   order: 1;
   flex: 1;
   overflow-y: scroll;
-  margin: .5em;
+  
+  position: relative;
 }
 
 .chatlog > .chatlog-content > ul {
@@ -371,9 +382,6 @@ form > .textbox {
 }
 
 .chatlog > .chatlog-content > ul > li {
-  border-bottom: solid 1px;
-  border-color: rgba(128,128,128,1);
-  margin-right: .5em;
   padding: .5em;
 }
 
@@ -381,12 +389,13 @@ form > .textbox {
   background-color: rgba(255,255,255,.05);
 }
 
-.chatlog > .chatlog-content > ul > li > .message-header > {
-  /*padding-right: .25em;*/
+.chatlog > .chatlog-content > ul > li > .message-header {
+  padding-bottom: .25em;
+  border-bottom: solid 1px;
+  border-color: rgba(128,128,128,.25);
 }
 
 .chatlog > .chatlog-content > ul > li > .message-header > .nickname {
-  /*padding-left: .25em;*/
   display: inline-block;
 }
 
@@ -394,8 +403,8 @@ form > .textbox {
   display: inline-block;
   
   color: rgba(255, 146, 0, 1);
-  border-color: rgba(128,128,128,1);
-  font-size: .5em;
+  border-color: rgba(128,128,128,.5);
+  font-size: .75em;
   font-weight: 300;
   
   flex-shrink: 0;
@@ -403,12 +412,13 @@ form > .textbox {
 }
 
 .chatlog > .chatlog-content > ul > li > .message-content {
+  padding-top: .25em;
   padding-left: 1em;
 }
 
 .chatlog > .chatlog-footer {
   border-top: solid 1px;
-  border-color: rgba(128,128,128,1);
+  border-color: rgba(128,128,128,.5);
   
   order: 2;
   flex: 0;

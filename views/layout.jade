@@ -5,6 +5,7 @@ html(ng-app="chatApp")
     title Chat
     link(rel='stylesheet', href='/stylesheets/normalize.css')
     link(rel='stylesheet', href='/stylesheets/font-awesome.min.css')
+    link(rel='stylesheet', href='/stylesheets/perfect-scrollbar.min.css')
     link(rel='stylesheet', href='/stylesheets/client.css')
     link(href="https://fonts.googleapis.com/css?family=Open+Sans:300,400", rel="stylesheet")
 
@@ -14,6 +15,9 @@ html(ng-app="chatApp")
     script(src='/javascripts/angular-animate.min.js')
     
     script(src="/socket.io/socket.io.js")
+    
+    script(src='/javascripts/perfect-scrollbar.jquery.min.js')
+    
     script(src='/javascripts/client.js')
     base(href="/")
   body

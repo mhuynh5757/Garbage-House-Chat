@@ -17,7 +17,7 @@ mongodb.MongoClient.connect(url, function(err, db) {
       var connected_users = [];
       Object.keys(io.sockets.sockets).forEach(function (key) {
         var _user = io.sockets.sockets[key].request.session.passport;
-        if (_user != undefined)
+        if (_user != undefined && connected_users.indexOf(_user.user.username) < 0)
         {
           connected_users.push(_user.user.username);
         }
@@ -28,10 +28,7 @@ mongodb.MongoClient.connect(url, function(err, db) {
           connected_nicknames = [];
           result.toArray().then(function(docs) {
             docs.forEach(function(doc) {
-              if(connected_nicknames.indexOf(doc.nickname) < 0)
-              {
-                connected_nicknames.push(doc.nickname);
-              }
+              connected_nicknames.push(doc.nickname);
             });
             io.emit('connected users', connected_nicknames);
           });
@@ -46,12 +43,14 @@ mongodb.MongoClient.connect(url, function(err, db) {
     io.on('connection', function(socket) {
       if(socket.request.session.passport != undefined)
       {
-        db.collection('chatlog').find({}, function(err, result) {
-          result.toArray().then(function(docs) {
-            socket.emit('chatlog', docs);
+        socket.on('initialize', function() {
+          db.collection('chatlog').find({}, function(err, result) {
+            result.toArray().then(function(docs) {
+              socket.emit('chatlog', docs);
+            });
           });
+          update_users();
         });
-        update_users();
         
         socket.on('disconnect', function() {
           update_users();

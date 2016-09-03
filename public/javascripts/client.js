@@ -177,9 +177,14 @@ chatApp.controller('chatController', ['$window', '$timeout', '$rootScope', '$sco
       function resizeChatlog() {
         var settingsOverlay = angular.element('#settings-overlay');
         settingsOverlay.outerHeight(angular.element('.chatlog').outerHeight());
+        scrollToBottom();
+        angular.element('.chatlog-content').perfectScrollbar('update');
+        angular.element('.userlist-content').perfectScrollbar('update');
       }
       resizeChatlog();
       angular.element($window).on('resize', resizeChatlog);
+      angular.element('.chatlog-content').perfectScrollbar();
+      angular.element('.userlist-content').perfectScrollbar();
     });
     
     var socket = io();
@@ -192,26 +197,22 @@ chatApp.controller('chatController', ['$window', '$timeout', '$rootScope', '$sco
     });
     
     $scope.messages = [];
+    socket.emit('initialize');
     socket.on('chatlog', function(chatlog) {
       $scope.$apply(function() {
+        var parsedChatlog = [];
         chatlog.forEach(function(msg) {
-          $scope.messages.push({
+          parsedChatlog.push({
             'nickname': msg.nickname,
             'message': msg.message,
             'timestamp': $filter('date')(msg.timestamp, 'MM/dd/yyyy hh:mm:ss a'),
             '_time': msg.timestamp
           });
         });
-        $scope.messages.sort(function(a, b) {
-          if (a._time > b._time) {
-            return 1;
-          }
-          if (a._time < b._time) {
-            return -1;
-          }
-          return 0;
-        });
+        Array.prototype.unshift.apply($scope.messages, parsedChatlog);
       });
+      angular.element('.chatlog-content').perfectScrollbar('update');
+      angular.element('.userlist-content').perfectScrollbar('update');
       scrollToBottom();
     });
     
@@ -224,16 +225,9 @@ chatApp.controller('chatController', ['$window', '$timeout', '$rootScope', '$sco
           'timestamp': $filter('date')(time, 'MM/dd/yyyy hh:mm:ss a'),
           '_time': time
         });
-        $scope.messages.sort(function(a, b) {
-          if (a._time > b._time) {
-            return 1;
-          }
-          if (a._time < b._time) {
-            return -1;
-          }
-          return 0;
-        });
       });
+      angular.element('.chatlog-content').perfectScrollbar('update');
+      angular.element('.userlist-content').perfectScrollbar('update');
       scrollToBottom();
     });
     
