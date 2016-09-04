@@ -2,6 +2,7 @@ var chatApp = angular.module('chatApp', ['ui.router', 'ngAnimate'])
 .run(function($rootScope, $window, $state, $animate) {
   function resizeContent() {
     angular.element('.ui-view-wrapper .content').outerHeight(angular.element(window).innerHeight() - angular.element('.header').outerHeight());
+    angular.element('.content').perfectScrollbar();
   }
   angular.element($window).on('resize', resizeContent);
   $rootScope.$on('$viewContentLoaded', resizeContent);
@@ -180,6 +181,8 @@ chatApp.controller('chatController', ['$window', '$timeout', '$rootScope', '$sco
         scrollToBottom();
         angular.element('.chatlog-content').perfectScrollbar('update');
         angular.element('.userlist-content').perfectScrollbar('update');
+        
+        angular.element('.content').perfectScrollbar('destroy');
       }
       resizeChatlog();
       angular.element($window).on('resize', resizeChatlog);
