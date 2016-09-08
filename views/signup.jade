@@ -5,16 +5,16 @@ div(class="content")
       label E-Mail Address:
       input(type="text", class="textbox", ng-model="formData.email")
       br
-      label Username: 
+      label Username:
       input(type="text", class="textbox", ng-model="formData.username")
       br
-      label Password: 
+      label Password:
       input(type="password", class="textbox", ng-model="formData.password")
       br
-      label Re-Enter Password: 
+      label Re-Enter Password:
       input(type="password", class="textbox", ng-model="formData.repeatPassword", ng-change="comparePasswords()")
       br
       input(type="submit", value="Sign Up", class="button primary-button", ng-click="signup()")
-      input(type="submit", value="Back to Login Page", class="button secondary-button", ng-click="getLogin()")
+      button(class="button secondary-button", ui-sref="login") Back to Login Page
     div(class="alert fail", ng-show="showPasswordMismatch") Passwords do not match.
     div(class="alert fail", ng-repeat="alert in alerts track by $index", ng-click="closeAlert($index)") {{alert}}

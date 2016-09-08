@@ -2,7 +2,7 @@ doctype html
 html(ng-app="chatApp")
   head
     meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
-    title Chat
+    title Garbage House Chat
     link(rel='stylesheet', href='/stylesheets/normalize.css')
     link(rel='stylesheet', href='/stylesheets/font-awesome.min.css')
     link(rel='stylesheet', href='/stylesheets/perfect-scrollbar.min.css')
@@ -13,11 +13,11 @@ html(ng-app="chatApp")
     script(src='/javascripts/angular.min.js')
     script(src='/javascripts/angular-ui-router.min.js')
     script(src='/javascripts/angular-animate.min.js')
-    
+
     script(src="/socket.io/socket.io.js")
-    
+
     script(src='/javascripts/perfect-scrollbar.jquery.min.js')
-    
+
     script(src='/javascripts/client.js')
     base(href="/")
   body
@@ -29,7 +29,7 @@ html(ng-app="chatApp")
             i(class="settingsCog fa fa-cog", ng-class="{active: showSettings}")
           input(id="settingsToggle", class="settingsCheckbox", type="checkbox", ng-model="showSettings", ng-change="toggleSettings()")
           i(class="fa fa-user username")
-          | {{current_nickname}} 
+          | {{current_nickname}}
           a(ng-click="logout()" class="logout")
             i(class="fa fa-sign-out")
     div(class="ui-view-wrapper" ui-view)

@@ -9,9 +9,9 @@ mongodb.MongoClient.connect(url, function(err, db) {
   else
   {
     var _server = require('./server.js')(db);
-    
+
     var io = require('socket.io')(_server.server);
-    
+
     var connected_nicknames = [];
     function update_users() {
       var connected_users = [];
@@ -35,7 +35,7 @@ mongodb.MongoClient.connect(url, function(err, db) {
         }
       });
     }
-    
+
     io.use(function(socket, next) {
       _server.sessionMiddleware(socket.request, {}, next);
     });
@@ -51,11 +51,11 @@ mongodb.MongoClient.connect(url, function(err, db) {
           });
           update_users();
         });
-        
+
         socket.on('disconnect', function() {
           update_users();
         });
-        
+
         socket.on('set nickname', function(nickname) {
           socket.request.session.reload(function(err) {
             db.collection('users').updateOne(
@@ -80,12 +80,17 @@ mongodb.MongoClient.connect(url, function(err, db) {
             });
           });
         });
-        
+
         socket.on('message', function(msg) {
           if (!(msg === null || msg === '')) {
             db.collection('users').findOne({'username': socket.request.session.passport.user.username}, function(err, result) {
-              io.emit('message', {nickname: result.nickname, message: msg});
-              db.collection('chatlog').insert({'timestamp': Date.now(), 'nickname': result.nickname, 'message': msg}, function(err, result) {
+              var message = {
+                'timestamp': Date.now(),
+                'nickname': result.nickname,
+                'message': msg
+              };
+              io.emit('message', message);
+              db.collection('chatlog').insert(message, function(err, result) {
                 db.collection('chatlog').count().then(function(res) {
                   if (res > 500) {
                     db.collection('chatlog').deleteOne({});

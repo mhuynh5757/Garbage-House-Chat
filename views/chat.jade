@@ -8,11 +8,12 @@ div(class="content hbox")
     p(class="chatlog-header") Messages
     div(autoscroll, class="chatlog-content always-visible", id="chatlog")
       ul
-        li(ng-repeat="msg in messages track by $index")
+        li(ng-repeat="msg in messages")
           div(class="message-header")
             div(class="nickname") {{msg.nickname}}
-            div(class="timestamp") {{msg.timestamp}} 
-          div(class="message-content") {{msg.message}}
+            div(class="timestamp") {{msg.timestamp}}
+          ul(class="message-content")
+            li(ng-repeat="line in msg.message track by $index") {{line}}
     div(class="chatlog-footer")
       form(ng-submit="message()" class="hbox input")
         input(type="text", autocomplete="off", ng-model="message_to_send", class="form-textbox", id="text_to_send", autofocus)

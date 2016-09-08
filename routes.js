@@ -6,7 +6,7 @@ module.exports = function(db) {
   var LocalStrategy = require('passport-local').Strategy;
 
   var bcrypt = require('bcrypt');
-  
+
   var nodemailer = require('nodemailer');
   var transporter = nodemailer.createTransport(process.env.EMAIL_URI)
   var validKeyCharacters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -42,61 +42,15 @@ module.exports = function(db) {
     }
   }));
 
-  router.get('/', function(req, res, next) {
-    return res.render('layout');
+  router.get('/views/:filename', function(req, res, next) {
+    var filename = req.params.filename;
+    if (!filename)
+    {
+      return res.status(404).send(filename + 'not found.');
+    }
+    return res.render(filename);
   });
 
-  router.get('/home', function(req, res, next) {
-    return res.render('home');
-  });
-
-  router.post('/home', function(req, res, next) {
-    if (req.isAuthenticated())
-    {
-      return res.status(200).send('chat');
-    }
-    else
-    {
-      return res.status(200).send('login');
-    }
-  });
-
-  router.get('/login', function(req, res, next) {
-    res.set('Cache-Control', 'no-store');
-    if (!req.isAuthenticated())
-    {
-      return res.render('login');
-    }
-    else
-    {
-      return res.render('alreadyLoggedIn', {username: req.session.passport.user.nickname});
-    }
-  });
-
-  router.post('/login', function(req, res, next) {
-    passport.authenticate('login', function(err, user, info) {
-      if (err)
-      {
-        return next(err);
-      }
-      if (!user)
-      {
-        return res.status(200).send(info);
-      }
-      req.logIn(user, function(err) {
-        if (err)
-        {
-          return next(err);
-        }
-        return res.status(200).send(info);
-      });
-    })(req, res, next);
-  });
-  
-  router.get('/signup', function(req, res, next) {
-    return res.render('signup');
-  });
-  
   router.post('/signup', function(req, res, next) {
     if((req.body.email.length <= 50 && req.body.username.length <= 50 && req.body.password.length <= 50) && (req.body.email.length > 0 && req.body.username.length > 0 && req.body.password.length > 0))
     {
@@ -147,22 +101,22 @@ module.exports = function(db) {
       return res.status(200).send({success: false, message: 'All fields must be between 1 and 50 (inclusive) characters long.'});
     }
   });
-  
-  router.get('/verify', function(req, res, next) {
-    if(req.query.username.length <= 50 && req.query.key.length == 20)
+
+  router.post('/verify', function(req, res, next) {
+    if(req.body.username.length <= 50 && req.body.key.length == 20)
     {
-      db.collection('users').findOne({'username':req.query.username}, function(err, user) {
+      db.collection('users').findOne({'username':req.body.username}, function(err, user) {
         if(err)
         {
           throw new Error(err);
         }
         if(!user)
         {
-          return res.redirect('/unauthorized');
+          return res.status(200).send({forwardedAlerts: [{message: 'Wrong key or username.', class: 'fail'}]});
         }
-        if(user.key != req.query.key)
+        if(user.key != req.body.key)
         {
-          return res.redirect('/unauthorized');
+          return res.status(200).send({forwardedAlerts: [{message: 'Wrong key or username.', class: 'fail'}]});
         }
         db.collection('users').updateOne({
           'username': user.username
@@ -172,31 +126,40 @@ module.exports = function(db) {
           }
         },
         function(err, result) {
-          return res.redirect('/#/verified');
+          return res.status(200).send({forwardedAlerts: [{message: 'Successfully verified. You may log in now.', class: 'success'}]});
         });
       });
     }
     else
     {
-      return res.redirect('/unauthorized');
+      return res.status(200).send({forwardedAlerts: [{message: 'Verification URL was malformed.', class: 'fail'}]});
     }
   });
-  
-  router.get('/verified', function(req, res, next) {
-    return res.status(200).send('');
+
+  router.post('/login', function(req, res, next) {
+    passport.authenticate('login', function(err, user, info) {
+      if (err)
+      {
+        return next(err);
+      }
+      if (!user)
+      {
+        return res.status(200).send(info);
+      }
+      req.logIn(user, function(err) {
+        if (err)
+        {
+          return next(err);
+        }
+        return res.status(200).send(info);
+      });
+    })(req, res, next);
   });
-  
-  router.get('/chat', function(req, res, next) {
-    if (req.isAuthenticated())
-    {
-      return res.render('chat');
-    }
-    else
-    {
-      return res.redirect('/unauthorized');
-    }
+
+  router.post('/isAuthenticated', function(req, res, next) {
+    return res.status(200).send(req.isAuthenticated());
   });
-  
+
   router.post('/getNickname', function(req, res, next) {
     if (req.isAuthenticated())
     {
@@ -204,27 +167,22 @@ module.exports = function(db) {
         return res.status(200).send(result.nickname);
       });
     }
-    else
-    {
-      return res.redirect('/unauthorized');
+    else {
+      return res.status(401).send('');
     }
   });
-  
+
   router.get('/keepAlive', function(req, res, next) {
     return res.status(200).send('kept alive');
-  });
-
-  router.get('/unauthorized', function(req, res, next) {
-    return res.render('unauthorized');
-  });
-
-  router.get('/fail', function(req, res, next) {
-    return res.render('fail');
   });
 
   router.get('/logout', function(req, res, next) {
     req.logout();
     return res.redirect('/');
+  });
+
+  router.all('*', function(req, res, next) {
+    return res.render('layout');
   });
 
   return router;
