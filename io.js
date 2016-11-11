@@ -22,13 +22,18 @@ mongodb.MongoClient.connect(url, function(err, db) {
           connected_users.push(_user.user.username);
         }
       });
-      db.collection('users').find({'username': {$in: connected_users}}, function(err, result) {
+      db.collection('users').find({}, function(err, result) {
         if(result)
         {
           connected_nicknames = [];
           result.toArray().then(function(docs) {
             docs.forEach(function(doc) {
-              connected_nicknames.push(doc.nickname);
+              var new_user = {'nickname': doc.nickname, 'online': true}
+              if (connected_users.indexOf(doc.username) < 0)
+              {
+                new_user.online = false;
+              }
+              connected_nicknames.push(new_user);
             });
             io.emit('connected users', connected_nicknames);
           });

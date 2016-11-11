@@ -262,6 +262,7 @@ form > .textbox {
 .userlist > .userlist-header {
   order: 0;
   flex: 0;
+  flex-shrink: 0;
   padding: .5em;
   margin: 0;
   color: rgba(0, 220, 0, 1);
@@ -286,7 +287,13 @@ form > .textbox {
 .userlist > .userlist-content > ul > li {
   border-bottom: solid 1px;
   border-color: rgba(128,128,128,.25);
+  padding-top: .25em;
   padding-bottom: .25em;
+  color: rgba(128,128,128,.25);
+}
+
+.userlist > .userlist-content > ul > li.online {
+  color: white;
 }
 
 .chatlog {
@@ -363,6 +370,7 @@ form > .textbox {
 .chatlog > .chatlog-header {
   order: 0;
   flex: 0;
+  flex-shrink: 0;
   padding: .5em;
   margin: 0;
   color: rgba(0, 220, 0, 1);
@@ -418,6 +426,7 @@ form > .textbox {
 
   order: 2;
   flex: 0;
+  flex-shrink: 0;
   padding: .5em;
 }
 

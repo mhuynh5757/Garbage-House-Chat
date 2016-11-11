@@ -78,6 +78,6 @@ module.exports = function(db) {
       : 'port ' + addr.port;
     debug('Listening on ' + bind);
   }
-  
+
   return {'server': server, 'sessionMiddleware': _app.sessionMiddleware};
 }

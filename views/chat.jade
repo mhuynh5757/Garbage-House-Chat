@@ -3,7 +3,8 @@ div(class="content hbox")
     p(class="userlist-header") Users
     div(class="userlist-content")
       ul
-        li(ng-repeat="usr in users track by $index") {{usr}}
+        li(ng-repeat="usr in online_users track by $index" class="online") {{usr}}
+        li(ng-repeat="usr in offline_users track by $index") {{usr}}
   div(class="chatlog vbox")
     p(class="chatlog-header") Messages
     div(autoscroll, class="chatlog-content always-visible", id="chatlog")

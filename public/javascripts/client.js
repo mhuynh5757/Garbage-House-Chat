@@ -262,10 +262,22 @@ chatApp.controller('chatController', ['$window', '$timeout', '$rootScope', '$sco
     future.setMilliseconds(0);
     setInterval(updateTimestamps, future - Date.now());
 
-    $scope.users = [];
+    $scope.online_users = [];
+    $scope.offline_users = [];
     socket.on('connected users', function(users) {
       $scope.$apply(function() {
-        $scope.users = users;
+        $scope.online_users = [];
+        $scope.offline_users = [];
+        users.forEach(function(user) {
+          if (user.online) {
+            $scope.online_users.push(user.nickname);
+          }
+          else {
+            $scope.offline_users.push(user.nickname);
+          }
+        });
+        $scope.online_users.sort();
+        $scope.offline_users.sort();
       });
     });
 
